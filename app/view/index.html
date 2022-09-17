@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Capstone JS - DinhTriThuc</title>
+    <!-- Font Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+        integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <div class="title">
+            <h2 class="text-center py-5 text-white">SmartPhone Store</h2>
+        </div>
+        <div class="button-cart">
+            <i id="sidebarCollapse" class="fa-solid fa-cart-shopping"></i>
+            <span id="quantityCart" class="total-qty">0</span>
+        </div>
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <i id="dismiss" class="fa-solid fa-xmark"></i>
+            <div class="sidebar-header">
+                <h2 class="text-center">Giỏ Hàng</h2>
+            </div>
+            <div class="cart-items">
+                <div class="table-responsive-lg">
+                    <table class="table table-hover table-dark">
+                        <tbody id="cartTable">
+                            <div class="totlalTable">
+
+                            </div>
+                        </tbody>
+
+                    </table>
+                    <div class="text-right" id="tablefoot">
+                        <h3>Tổng cộng: $<span id="total"></span></h3>
+                        <button id="datHang" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary mr-3 mt-2">Thanh toán</button>
+                        <button id="xoaGioHang" onclick="xoaGioHang()" class="btn btn-warning mt-2">Xóa giỏ hàng</button>
+                    </div>
+                    <p id="thongBaoGioHang" style="display: none" class="text-center">Bạn chưa có sản phẩm trong giỏ
+                        hàng. Vui lòng chọn đặt sản phẩm vào giỏ
+                </div>
+
+            </div>
+
+        </nav>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title mx-auto text-center" id="exampleModalLabel">Xác nhận đơn hàng</h5>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Số lượng</th>
+                                    <th>Giá</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyConfirm">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="close" type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
+                        <button id="xacNhanDatHang" type="button" class="btn btn-primary">Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="products">
+            <div class="container">
+
+                <div class=" w-25 form-group ml-auto selectLoaiSP">
+                    <label for="loaiSP" class="text-light" style="font-weight: bold; font-size: 18px;">Tìm kiếm sản phẩm
+                        theo loại</label>
+                    <select class="form-control" id="loaiSP" onchange="selectType()">
+                        <option>Chọn loại sản phẩm</option>
+                        <option>Iphone</option>
+                        <option>Samsung</option>
+                    </select>
+                </div>
+                <div class="row" id="productsList">
+                    <div class="w-100">
+                        <div class="loader mx-auto" id="loader" style="display: block;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overlay"></div>
+    </div>
+
+    <!-- jQuery CDN  -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+        integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+        crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+        integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+        crossorigin="anonymous"></script>
+    <!-- jQuery Custom Scroller CDN -->
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sidebar").mCustomScrollbar({
+                theme: "minimal"
+            });
+
+            $('#dismiss, .overlay').on('click', function () {
+                $('#sidebar').removeClass('active');
+                $('.overlay').removeClass('active');
+            });
+
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').addClass('active');
+                $('.overlay').addClass('active');
+                $('.collapse.in').toggleClass('in');
+                $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+            });
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"
+        integrity="sha512-odNmoc1XJy5x1TMVMdC7EMs3IVdItLPlCeL5vSUPN2llYKMJ2eByTTAIiiuqLg+GdNr9hF6z81p27DArRFKT7A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../models/product.js"></script>
+    <script src="../models/productList.js"></script>
+    <script src="../models/cartItem.js"></script>
+    <script src="../services/service.js"></script>
+    <script src="../controllers/main.js"></script>
+</body>
+
+</html>
